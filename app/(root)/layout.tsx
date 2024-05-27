@@ -11,13 +11,13 @@ export default function RootLayout({
   const loggedIn = {firstName: "Anthony", lastName: "Sá"};
   return (
   <main className="flex h-screen w-full">
-    <SideBar user={loggedIn}/>
+    <SideBar />
     
     <div className="flex size-full flex-col">
     <div className="root-layout">
       <Image src="/energy.png" alt="logo" width={40} height={40} className="menu icon"/>
       <div>
-        <MobileNavBar user={loggedIn}/>
+        <MobileNavBar />
       </div>
     </div>
     {children}

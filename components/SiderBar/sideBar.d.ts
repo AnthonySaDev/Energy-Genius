@@ -1,3 +1,3 @@
 export interface SideBarProps {
-    user: User
+    user?: User
 }

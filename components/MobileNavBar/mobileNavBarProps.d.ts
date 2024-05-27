@@ -1,3 +1,3 @@
 declare interface MobileNavProps {
-    user: User;
+    user?: User;
   }
