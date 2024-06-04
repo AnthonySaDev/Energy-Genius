@@ -7,7 +7,7 @@ export const sidebarLinks = [
     {
       imgURL: "/icons/dollar-circle.svg",
       route: "/economy",
-      label: "Economia",
+      label: "Sobre",
     },
     {
       imgURL: "/icons/transaction.svg",
@@ -22,7 +22,7 @@ export const sidebarLinks = [
     datasets: [
       {
         label: "Consumo (kWh)",
-        data: [33, 53, 85, 41, 44, 65],
+        data: [48, 53, 77, 66, 52, 73],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
 
