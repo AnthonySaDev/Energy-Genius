@@ -27,11 +27,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
     color: '#059669', 
+    textAlign: 'right',
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    gridTemplateColumns: '1fr 1/2fr', 
+    gap: '10px',
   },
+  
 });
 
 export interface IData {
@@ -45,10 +47,10 @@ export interface IData {
     amountToPay: string;
     economy: string;
     discount: string;
-    currentConsumption: string;
+    costPerKWh: number;
     energyConsumption: number;
     totalCost: string;
-    graphImage: string;
+    graphImage?: string;
 }
 
 export const Pdf = ({ data }: { data: IData }) => (
@@ -73,7 +75,7 @@ export const Pdf = ({ data }: { data: IData }) => (
       </View>
       <View style={styles.row}>
         <View style={styles.textBlack}><Text>Desconto: </Text><Text style={styles.textGreen}>{data.discount}</Text></View>
-        <View style={styles.textBlack}><Text>Consumo atual: </Text><Text style={styles.textGreen}>{data.currentConsumption}</Text></View>
+        <View style={styles.textBlack}><Text>Custo por kWh: </Text><Text style={styles.textGreen}>{data.costPerKWh}</Text></View>
       </View>
       <View style={styles.row}>
         <View style={styles.textBlack}><Text>Usuário: </Text><Text style={styles.textGreen}>{data.user}</Text></View>
@@ -81,8 +83,8 @@ export const Pdf = ({ data }: { data: IData }) => (
       </View>
       <View style={[styles.textBlack, {backgroundColor: '#059669', color: '#ffffff', padding: 8, fontWeight: 'bold', borderRadius: 5}]}><Text>Custo total: </Text><Text >R$ {data.totalCost}</Text></View>
       <View style={{marginTop: 20, textAlign: 'center', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text style={styles.textGreen}>Indicativos de economia e energia limpa</Text>
-      <Image src={data.graphImage} style={styles.image} />
+      <Text style={[styles.textGreen, {textAlign: 'center', fontWeight: 'bold'}]}>Na Energy Genius prezamos a economia e energia limpa</Text>
+     {data.graphImage ? <Image src={data.graphImage} style={styles.image} /> : <></>}
       </View>
     </Page>
 

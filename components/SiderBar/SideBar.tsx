@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import { SideBarProps } from './sideBar'
 import Link from 'next/link'
 import energy from '../../public/energy.png'
 import Image from 'next/image'
@@ -8,7 +7,7 @@ import { sidebarLinks } from '@/constants'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 
-export default function SideBar({user}: SideBarProps) {
+export default function SideBar() {
 
     const pathName = usePathname()
 

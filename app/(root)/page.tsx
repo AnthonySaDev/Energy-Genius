@@ -1,39 +1,62 @@
 'use client';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import LineGraph from '@/components/Charts/Line';
 import HeaderBox from '@/components/HeaderBox/HeaderBox';
 import { IData, Pdf } from '@/components/Pdf/Pdf';
 import { Button } from '@/components/ui/button';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { toPng } from 'html-to-image';
-import { useState } from 'react';
+import { FaSpinner } from 'react-icons/fa';
 
-export default function Home() {
+
+export interface UserProps {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  cpfCnpj: string;
+  address: {
+    logradouro: string;
+    numero: string;
+    bairro: string;
+    cidade: string;
+    estado: string;
+  };}
+
+export default function Dashboard() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewPdf, setViewPdf] = useState(false);
   const [data, setData] = useState<IData | null>(null);
+  const [user, setUser] = useState<UserProps>({} as UserProps);
+  const router = useRouter();
 
-  const loggedIn = {
-    firstName: "Anthony",
-  };
+  useEffect(() => {
+    const loggedUser = localStorage.getItem('user');
+    if (!loggedUser) {
+      router.push('/sign-in');
+    } else {
+      setUser(JSON.parse(loggedUser));
+    }
+  }, [router]);
 
   const generateData = async () => {
-    const energyConsumption = 73; 
-    const costPerKWh = 0.95884098; 
-    const totalCost = energyConsumption * costPerKWh; 
+    const energyConsumption = 73;
+    const costPerKWh = 0.95884098;
+    const totalCost = energyConsumption * costPerKWh;
 
     const node = document.getElementById('graph');
-    
+
     if (node) {
       const graphImage = await toPng(node);
 
       setData({
-        user: loggedIn.firstName,
+        user: user?.firstName,
         energyConsumption,
         totalCost: totalCost.toFixed(2),
-        address: 'Rua Ana Catarina, 131, Jardim das Flores, Tucurui, BR',
+        address: `${user.address.logradouro}, ${user.address.numero}, ${user.address.bairro}, ${user.address.cidade} - ${user.address.estado}`,
         amountToPay: totalCost.toFixed(2),
-        cpf: '123.456.789-10',
-        currentConsumption: '73 kWh',
+        cpf: user.cpfCnpj,
+        costPerKWh,
         discount: 'R$ 58,23',
         dueDate: '07/2024',
         economy: 'R$ 18,22',
@@ -42,7 +65,7 @@ export default function Home() {
         referenceMonth: 'Junho',
         graphImage,
       });
-      setViewPdf(true); // Mostra o PDF após os dados serem gerados
+      setViewPdf(true);
     } else {
       console.error('Elemento não encontrado');
     }
@@ -52,14 +75,22 @@ export default function Home() {
     setViewPdf(!viewPdf);
   };
 
+  if (!user) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
+        <FaSpinner className="animate-spin text-6xl text-green-500" />
+      </div>
+    );
+  }
+
   return (
-    <section className="home p-10 bg-gray-100 min-h-screen">
+    <section className="home p-10 bg-gray-100 min-h-screen mb-10">
       <div className="home-content max-w-4xl mx-auto">
         <header className="home-header mb-8">
-          <HeaderBox 
+          <HeaderBox
             type="greeting"
             title="Bem-vindo(a)"
-            user={loggedIn?.firstName || "Usuário" }
+            user={user?.firstName || "Usuário"}
             subtext="Acesse e gerencie seus dados com eficiência."
           />
         </header>
@@ -67,7 +98,7 @@ export default function Home() {
           <h2 className="text-2xl font-semibold mb-4">Seu Consumo de Energia</h2>
           <p className="text-lg text-gray-700">Abaixo está o gráfico do seu consumo de energia no último mês. Utilize essa informação para monitorar e otimizar seu uso de energia.</p>
         </div>
-        <div className="max-w-full bg-white shadow-md rounded-lg p-5 mb-10" id="graph">
+        <div className="max-w-full h-fit bg-white shadow-md rounded-lg p-5 mb-10" id="graph">
           <LineGraph />
         </div>
         <div className="text-center">
@@ -92,7 +123,7 @@ export default function Home() {
             </>
           )}
         </div>
-        <div className="mt-10 text-center text-lg text-gray-700">
+        <div className="my-10 text-center text-lg text-gray-700">
           <p className="mb-5">
             A utilização de energia limpa não só protege nosso meio ambiente, mas também proporciona um futuro mais sustentável para todos. Nossa empresa está comprometida em ajudar nossos clientes a monitorar e reduzir seu consumo de energia, promovendo práticas sustentáveis e eficientes.
           </p>

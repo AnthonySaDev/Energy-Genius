@@ -18,7 +18,7 @@ export const sidebarLinks = [
   ];
 
   export const lineCharData = {
-    labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho"],
+    labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
     datasets: [
       {
         label: "Consumo (kWh)",

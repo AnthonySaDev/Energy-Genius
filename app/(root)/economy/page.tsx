@@ -10,7 +10,7 @@ export default function Economy() {
                 A <strong>Energy Genius</strong> foi fundada em 2020 por um grupo de engenheiros apaixonados por energia renovável. Os fundadores, João Silva, Maria Santos e Carlos Oliveira, uniram-se com a visão de criar uma empresa que pudesse ajudar as pessoas a entenderem e controlarem melhor o seu consumo de energia.
             </p>
         
-            <img src="https://mercadoeconsumo.com.br/wp-content/uploads/2023/05/ENERGIA_LIMPA_SHUTTER.jpg" alt="Small company" className="mr-10 w-1/4 rounded-lg my-10"/>
+            <img src="https://mercadoeconsumo.com.br/wp-content/uploads/2023/05/ENERGIA_LIMPA_SHUTTER.jpg" alt="Small company" className="mr-10 w-1/5 rounded-lg my-10 hidden md:flex"/>
             
             <p className="text-lg my-10">
                 A empresa começou pequena, com apenas uma ideia e um sonho. Mas com muito trabalho duro e dedicação, a Energy Genius cresceu e se tornou uma das principais empresas de tecnologia de energia do mundo. Hoje, ajudamos milhares de pessoas a economizar energia e dinheiro todos os dias.
@@ -28,7 +28,7 @@ export default function Economy() {
                 Oferecemos uma variedade de produtos e serviços para ajudar nossos usuários a economizar energia. Nosso aplicativo permite que os usuários monitorem seu consumo de energia em tempo real, recebam dicas personalizadas para economizar energia e vejam como seu consumo se compara ao de outros usuários semelhantes.
             </p>
             <p className="text-lg my-10">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaWxf8OXJu1KMW2kl9vRxJc-PWxDb7nWQWDg&s" alt="Achievements" className="mr-10 w-1/4 rounded-lg my-10" />
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaWxf8OXJu1KMW2kl9vRxJc-PWxDb7nWQWDg&s" alt="Achievements" className="mr-10 w-1/5 rounded-lg my-10 hidden md:flex" />
                 Ao longo dos anos, alcançamos vários marcos importantes. Em 2021, atingimos um milhão de usuários. Em 2022, lançamos nosso aplicativo em cinco novos países. E em 2023, fomos reconhecidos como uma das empresas mais inovadoras do setor de energia.
             </p>
             <p className="text-lg my-10">
