@@ -21,16 +21,27 @@ export function SignInForm() {
   const router = useRouter();
 
   const handleSignIn = () => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (email === user.email && password === user.password) {
-        router.push('/');
-      } else {
-        setError('Email ou senha incorretos.');
-      }
+    const predefinedUser = {
+      firstName: "Anthony",
+      lastName: "Reis",
+      email: "anthonysareis11@gmail.com",
+      password: "02150530ga",
+      cpfCnpj: "152.094.926-05",
+      address: {
+        logradouro: "Rua Ana Ferreira Antunes",
+        bairro: "Santa Eugênia",
+        cidade: "Montes Claros",
+        estado: "MG",
+        numero: "201"
+      },
+      accountType: "cpf"
+    };
+
+    if (email === predefinedUser.email && password === predefinedUser.password) {
+      localStorage.setItem('user', JSON.stringify(predefinedUser));
+      router.push('/');
     } else {
-      setError('Usuário não encontrado.');
+      setError('Email ou senha incorretos.');
     }
   };
 

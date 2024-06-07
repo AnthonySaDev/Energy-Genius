@@ -9,7 +9,6 @@ import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { toPng } from 'html-to-image';
 import { FaSpinner } from 'react-icons/fa';
 
-
 export interface UserProps {
   firstName: string;
   lastName?: string;
@@ -21,13 +20,14 @@ export interface UserProps {
     bairro: string;
     cidade: string;
     estado: string;
-  };}
+  };
+}
 
 export default function Dashboard() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [viewPdf, setViewPdf] = useState(false);
   const [data, setData] = useState<IData | null>(null);
-  const [user, setUser] = useState<UserProps>({} as UserProps);
+  const [user, setUser] = useState<UserProps | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,11 +36,12 @@ export default function Dashboard() {
       router.push('/sign-in');
     } else {
       setUser(JSON.parse(loggedUser));
+      setIsLoaded(true); // Set isLoaded to true after user is loaded
     }
   }, [router]);
 
   const generateData = async () => {
-    const energyConsumption = 73;
+    const energyConsumption = user?.firstName === 'Anthony' ? 73 : 0;
     const costPerKWh = 0.95884098;
     const totalCost = energyConsumption * costPerKWh;
 
@@ -49,23 +50,25 @@ export default function Dashboard() {
     if (node) {
       const graphImage = await toPng(node);
 
-      setData({
-        user: user?.firstName,
-        energyConsumption,
-        totalCost: totalCost.toFixed(2),
-        address: `${user.address.logradouro}, ${user.address.numero}, ${user.address.bairro}, ${user.address.cidade} - ${user.address.estado}`,
-        amountToPay: totalCost.toFixed(2),
-        cpf: user.cpfCnpj,
-        costPerKWh,
-        discount: 'R$ 58,23',
-        dueDate: '07/2024',
-        economy: 'R$ 18,22',
-        emissionDate: '01/06/2024',
-        installationNumber: '123456',
-        referenceMonth: 'Junho',
-        graphImage,
-      });
-      setViewPdf(true);
+      if (user) {
+        setData({
+          user: user.firstName,
+          energyConsumption,
+          totalCost: totalCost.toFixed(2),
+          address: `${user.address.logradouro}, ${user.address.numero}, ${user.address.bairro}, ${user.address.cidade} - ${user.address.estado}`,
+          amountToPay: totalCost.toFixed(2),
+          cpf: user.cpfCnpj,
+          costPerKWh,
+          discount: user?.firstName === 'Anthony' ? 'R$ 58,23' : 'R$ 0,00',
+          dueDate: 'julho/2024',
+          economy: user?.firstName === 'Anthony' ? 'R$ 18,22' : 'R$ 0,00',
+          emissionDate: user?.firstName === 'Anthony' ? '01/06/2024' : 'Não emitida',
+          installationNumber: '123456',
+          referenceMonth: 'Junho',
+          graphImage,
+        });
+        setViewPdf(true);
+      }
     } else {
       console.error('Elemento não encontrado');
     }
@@ -75,7 +78,7 @@ export default function Dashboard() {
     setViewPdf(!viewPdf);
   };
 
-  if (!user) {
+  if (!isLoaded) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
         <FaSpinner className="animate-spin text-6xl text-green-500" />
@@ -99,9 +102,10 @@ export default function Dashboard() {
           <p className="text-lg text-gray-700">Abaixo está o gráfico do seu consumo de energia no último mês. Utilize essa informação para monitorar e otimizar seu uso de energia.</p>
         </div>
         <div className="max-w-full h-fit bg-white shadow-md rounded-lg p-5 mb-10" id="graph">
-          <LineGraph />
+        <LineGraph firstName={user?.firstName || ""}/>
         </div>
         <div className="text-center">
+        <h1 className="text-2xl font-semibold mb-8">Tenha acesso rápido ao relatório desse mês:</h1>
           <Button variant="outline" className="rounded mr-10 mb-10" onClick={generateData}>
             Gerar PDF
           </Button>

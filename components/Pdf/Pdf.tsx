@@ -84,7 +84,6 @@ export const Pdf = ({ data }: { data: IData }) => (
       <View style={[styles.textBlack, {backgroundColor: '#059669', color: '#ffffff', padding: 8, fontWeight: 'bold', borderRadius: 5}]}><Text>Custo total: </Text><Text >R$ {data.totalCost}</Text></View>
       <View style={{marginTop: 20, textAlign: 'center', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <Text style={[styles.textGreen, {textAlign: 'center', fontWeight: 'bold'}]}>Na Energy Genius prezamos a economia e energia limpa</Text>
-     {data.graphImage ? <Image src={data.graphImage} style={styles.image} /> : <></>}
       </View>
     </Page>
 
