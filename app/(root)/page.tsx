@@ -23,8 +23,16 @@ export interface UserProps {
   };
 }
 
+export interface Customer {
+  name: string;
+  instalationNumber: string;
+  consumption: number;
+}
+
 export default function Dashboard() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [kwhValueLocal, setKwhValueLocal] = useState<number>(0);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [viewPdf, setViewPdf] = useState(false);
   const [data, setData] = useState<IData | null>(null);
   const [user, setUser] = useState<UserProps | null>(null);
@@ -32,17 +40,32 @@ export default function Dashboard() {
 
   useEffect(() => {
     const loggedUser = localStorage.getItem('user');
-    if (!loggedUser) {
-      router.push('/sign-in');
-    } else {
+    const kwhValue = localStorage.getItem('kwhValue');
+    const customers = localStorage.getItem('customers');
+
+    if (loggedUser) {
       setUser(JSON.parse(loggedUser));
-      setIsLoaded(true); // Set isLoaded to true after user is loaded
+    } else {
+      router.push('/sign-in');
     }
+
+    if (kwhValue) {
+      setKwhValueLocal(parseFloat(kwhValue));
+    }
+
+    if (customers) {
+      setCustomers(JSON.parse(customers));
+    }
+
+    setIsLoaded(true);
   }, [router]);
 
   const generateData = async () => {
-    const energyConsumption = user?.firstName === 'Anthony' ? 73 : 0;
-    const costPerKWh = 0.95884098;
+    const energyConsumption =
+      customers[0]?.name === 'Anthony Sá' && user?.firstName === 'Anthony'
+        ? customers[0].consumption
+        : customers[1]?.consumption || 0;
+    const costPerKWh = kwhValueLocal;
     const totalCost = energyConsumption * costPerKWh;
 
     const node = document.getElementById('graph');
@@ -59,11 +82,13 @@ export default function Dashboard() {
           amountToPay: totalCost.toFixed(2),
           cpf: user.cpfCnpj,
           costPerKWh,
-          discount: user?.firstName === 'Anthony' ? 'R$ 58,23' : 'R$ 0,00',
+          discount: `R$ ${(totalCost - totalCost * 0.85).toFixed(2)}`,
           dueDate: 'julho/2024',
-          economy: user?.firstName === 'Anthony' ? 'R$ 18,22' : 'R$ 0,00',
-          emissionDate: user?.firstName === 'Anthony' ? '01/06/2024' : 'Não emitida',
-          installationNumber: '123456',
+          economy: `${((totalCost - totalCost * 0.85) - totalCost / 100).toFixed(2)}%`,
+          emissionDate: '01/06/2024',
+          installationNumber: customers[0]?.name === 'Anthony Sá' && user?.firstName === 'Anthony'
+            ? customers[0].instalationNumber
+            : customers[1]?.instalationNumber || '',
           referenceMonth: 'Junho',
           graphImage,
         });
@@ -98,14 +123,14 @@ export default function Dashboard() {
           />
         </header>
         <div className="mb-8 text-center">
-          <h2 className="text-2xl font-semibold mb-4">Seu Consumo de Energia</h2>
+          <h2 className="text-2xl font-semibold mb-4">Consumo de Energia</h2>
           <p className="text-lg text-gray-700">Abaixo está o gráfico do seu consumo de energia no último mês. Utilize essa informação para monitorar e otimizar seu uso de energia.</p>
         </div>
         <div className="max-w-full h-fit bg-white shadow-md rounded-lg p-5 mb-10" id="graph">
-        <LineGraph firstName={user?.firstName || ""}/>
+          <LineGraph firstName={user?.firstName || ""}/>
         </div>
         <div className="text-center">
-        <h1 className="text-2xl font-semibold mb-8">Tenha acesso rápido ao relatório desse mês:</h1>
+          <h1 className="text-2xl font-semibold mb-8">Tenha acesso rápido ao relatório desse mês:</h1>
           <Button variant="outline" className="rounded mr-10 mb-10" onClick={generateData}>
             Gerar PDF
           </Button>

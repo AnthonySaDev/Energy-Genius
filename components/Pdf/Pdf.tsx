@@ -70,11 +70,11 @@ export const Pdf = ({ data }: { data: IData }) => (
         <View style={styles.textBlack}><Text>Data de vencimento: </Text><Text style={styles.textGreen}>{data.dueDate}</Text></View>
       </View>
       <View style={styles.row}>
-        <View style={styles.textBlack}><Text>Valor a pagar: </Text><Text style={styles.textGreen}>{data.amountToPay}</Text></View>
-        <View style={styles.textBlack}><Text>Economia: </Text><Text style={styles.textGreen}>{data.economy}</Text></View>
+        <View style={styles.textBlack}><Text>Valor a pagar: </Text><Text style={styles.textGreen}>R$ {data.amountToPay}</Text></View>
+        <View style={styles.textBlack}><Text>Desconto: </Text><Text style={styles.textGreen}>{data.discount}</Text></View>
       </View>
       <View style={styles.row}>
-        <View style={styles.textBlack}><Text>Desconto: </Text><Text style={styles.textGreen}>{data.discount}</Text></View>
+      <View style={styles.textBlack}><Text>Economia: </Text><Text style={styles.textGreen}>{data.economy}</Text></View>
         <View style={styles.textBlack}><Text>Custo por kWh: </Text><Text style={styles.textGreen}>{data.costPerKWh}</Text></View>
       </View>
       <View style={styles.row}>

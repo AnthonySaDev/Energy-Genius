@@ -40,7 +40,11 @@ export function SignInForm() {
     if (email === predefinedUser.email && password === predefinedUser.password) {
       localStorage.setItem('user', JSON.stringify(predefinedUser));
       router.push('/');
-    } else {
+    }
+    if(email == "admin@energygenius.com" && password == "123456"){
+      router.push('/admin')
+    }
+    else {
       setError('Email ou senha incorretos.');
     }
   };

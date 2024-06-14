@@ -5,26 +5,7 @@ import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FaFilePdf, FaBolt } from 'react-icons/fa';
-import { UserProps } from '../page';
-import LineGraph from '@/components/Charts/Line';
-
-const bills = [
-  { id: 1, month: 'Janeiro', consumption: 48 },
-  { id: 2, month: 'Fevereiro', consumption: 53 },
-  { id: 3, month: 'Março', consumption: 77 },
-  { id: 4, month: 'Abril', consumption: 66 },
-  { id: 5, month: 'Maio', consumption: 52 },
-  { id: 6, month: 'Junho', consumption: 73 },
-];
-
-const fakeBills = [
-  { id: 1, month: 'Janeiro', consumption: 0 },
-  { id: 2, month: 'Fevereiro', consumption: 0 },
-  { id: 3, month: 'Março', consumption: 0 },
-  { id: 4, month: 'Abril', consumption: 0 },
-  { id: 5, month: 'Maio', consumption: 0 },
-  { id: 6, month: 'Junho', consumption: 0 },
-];
+import { Customer, UserProps } from '../page';
 
 const monthMapping: { [key: string]: number } = {
   'Janeiro': 0,
@@ -55,6 +36,8 @@ export default function History() {
   const [viewPdf, setViewPdf] = useState(false);
   const [data, setData] = useState<IData | null>(null);
   const [user, setUser] = useState<UserProps>({} as UserProps);
+  const [kwhValueLocal, setKwhValueLocal] = useState<number>(0);
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
   const togglePdfViewer = () => {
     setViewPdf(!viewPdf);
@@ -62,31 +45,60 @@ export default function History() {
 
   useEffect(() => {
     const loggedUser = localStorage.getItem('user');
+    const kwhValue = localStorage.getItem('kwhValue');
+    const customers = localStorage.getItem('customers');
     if (!loggedUser) {
       router.push('/sign-in');
     } else {
       setUser(JSON.parse(loggedUser));
     }
+    if (kwhValue) {
+      setKwhValueLocal(parseFloat(kwhValue));
+    }
+
+    if (customers) {
+      setCustomers(JSON.parse(customers));
+    }
   }, [router]);
+
+  const bills = [
+    { id: 1, month: 'Janeiro', consumption: 48 },
+    { id: 2, month: 'Fevereiro', consumption: 53 },
+    { id: 3, month: 'Março', consumption: 77 },
+    { id: 4, month: 'Abril', consumption: 66 },
+    { id: 5, month: 'Maio', consumption: 52 },
+    { id: 6, month: 'Junho', consumption: customers[0]?.consumption || 0 },
+  ];
+
+  const fakeBills = [
+    { id: 1, month: 'Janeiro', consumption: 0 },
+    { id: 2, month: 'Fevereiro', consumption: 0 },
+    { id: 3, month: 'Março', consumption: 0 },
+    { id: 4, month: 'Abril', consumption: 0 },
+    { id: 5, month: 'Maio', consumption: 0 },
+    { id: 6, month: 'Junho', consumption: customers[1]?.consumption || 0 },
+  ];
 
   const generateData = async (bill: { id?: number; month: string; consumption: number; }) => {
     const { month, consumption } = bill;
-    const costPerKWh = 0.95884098;
+    const costPerKWh = kwhValueLocal;
     const totalCost = consumption * costPerKWh;
     setData({
-      user: user?.firstName,
+      user: user.firstName,
       energyConsumption: consumption,
       totalCost: totalCost.toFixed(2),
       address: `${user.address.logradouro}, ${user.address.numero}, ${user.address.bairro}, ${user.address.cidade} - ${user.address.estado}`,
       amountToPay: totalCost.toFixed(2),
       cpf: user.cpfCnpj,
-      costPerKWh: costPerKWh,
-      discount: user?.firstName === 'Anthony' ? 'R$ 58,23' : 'R$ 0,00',
+      costPerKWh,
+      discount: `R$ ${(totalCost - totalCost * 0.85).toFixed(2)}`,
       dueDate: getDueDate(month),
-      economy: user?.firstName === 'Anthony' ? 'R$ 18,22' : 'R$ 0,00',
-      emissionDate: user?.firstName === 'Anthony' ? '01/06/2024' : 'Não emitida',
-      installationNumber: '123456',
-      referenceMonth: month,
+      economy: `${((totalCost - totalCost * 0.85) - totalCost / 100).toFixed(2)}%`,
+      emissionDate: '01/06/2024',
+      installationNumber: customers[0]?.name === 'Anthony Sá' && user?.firstName === 'Anthony'
+        ? customers[0].instalationNumber
+        : customers[1]?.instalationNumber || '',
+      referenceMonth: 'Junho',
       graphImage: '',
     });
     setViewPdf(true);

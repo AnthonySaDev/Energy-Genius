@@ -1,3 +1,5 @@
+import { Customer } from "@/app/(root)/page";
+
 export const sidebarLinks = [
     {
       imgURL: "/icons/home.svg",
@@ -17,14 +19,29 @@ export const sidebarLinks = [
  
   ];
 
-  export const lineCharData = {
+  type LineChartData = {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string;
+    }[];
+  };
+  
+  const customersFromLocalStorage = localStorage.getItem('customers');
+  let customers: Customer[] = [];
+  
+  if (customersFromLocalStorage) {
+    customers = JSON.parse(customersFromLocalStorage);
+  }
+  
+  export const lineCharData: LineChartData = {
     labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
     datasets: [
       {
         label: "Consumo (kWh)",
-        data: [48, 53, 77, 66, 52, 73],
+        data: [48, 74, 77, 84, 78, customers.length > 0 ? customers[0].consumption : 90],
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
-
     ],
   }
